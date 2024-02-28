@@ -9,6 +9,19 @@ import (
 	"sync"
 )
 
+func shortestNext(s string) string {
+	chars := []byte(s)
+
+	for i := len(chars) - 1; i >= 0; i-- {
+		if chars[i] < 'z' {
+			chars[i]++
+			return string(chars[:i+1])
+		}
+	}
+
+	return s + "a"
+}
+
 type server struct {
 	urls           tree.Tree[string, string]
 	treeLock       sync.RWMutex
@@ -88,10 +101,15 @@ func (s *server) handleInsert(w http.ResponseWriter, r *http.Request) {
 	alias := r.Form.Get("alias")
 	address := r.Form.Get("url")
 
-	if alias == "" || address == "" {
-		http.Error(w, "alias and URL are required", http.StatusBadRequest)
+	if address == "" {
+		http.Error(w, "URL is required", http.StatusBadRequest)
 		return
 	}
+
+	if alias == "" {
+        maxAlias, _, _ := s.urls.Max()
+        alias = shortestNext(maxAlias)
+    }
 
 	parsed, err := url.Parse(address)
 	if err != nil {
@@ -122,7 +140,7 @@ func (s *server) handleInsert(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("shortened URL added successfully\n"))
+	w.Write([]byte("URL added successfully with alias \"" + alias + "\"\n"))
 }
 
 func (s *server) handleDelete(w http.ResponseWriter, r *http.Request) {
@@ -163,7 +181,7 @@ func (s *server) handleDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	w.Write([]byte("shortened URL deleted successfully\n"))
+	w.Write([]byte("URL with alias \"" + alias + "\" deleted successfuly\n"))
 }
 
 func main() {
