@@ -149,13 +149,7 @@ func (s *server) handleDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "error when parsing form data", http.StatusBadRequest)
-		return
-	}
-
-	alias := r.Form.Get("alias")
+	alias := r.URL.Query().Get("alias")
 
 	if alias == "" {
 		http.Error(w, "alias is required", http.StatusBadRequest)
@@ -174,14 +168,13 @@ func (s *server) handleDelete(w http.ResponseWriter, r *http.Request) {
 	s.treeLock.Lock()
 	defer s.treeLock.Unlock()
 
-	err = s.urls.Delete(alias)
+	err := s.urls.Delete(alias)
 	if err != nil {
-		http.Error(w, "alias \""+alias+"\" doesn't exist", http.StatusConflict)
+		http.Error(w, "alias \""+alias+"\" already doesn't exist", http.StatusConflict)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	w.Write([]byte("URL with alias \"" + alias + "\" deleted successfuly\n"))
 }
 
 func main() {
