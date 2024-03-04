@@ -1,5 +1,7 @@
 # Go URL Shortener HTTP Server
 
+## A cleaner, RESTful version is here: (https://github.com/Rbd3178/urlShortenerAPI)
+
 This is a simple URL shortener implemented in Go, utilizing a custom Red Black Tree implementation for efficient storage. The server allows users to store long URLs by providing an alias, and supports concurrent searches.
 
 ## Usage
