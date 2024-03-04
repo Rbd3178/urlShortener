@@ -2,7 +2,7 @@
 
 ## A cleaner, RESTful version is here: (https://github.com/Rbd3178/urlShortenerAPI)
 
-This is a simple URL shortener implemented in Go, utilizing a custom Red Black Tree implementation for efficient storage. The server allows users to store long URLs by providing an alias, and supports concurrent searches.
+This is a simple URL shortener implemented in Go, utilizing only standard library and a custom Red Black Tree implementation for efficient storage. The server allows to store long URLs by providing an alias, and supports concurrent searches.
 
 ## Usage
 
